@@ -20,7 +20,7 @@ The non-pass graders explain 100% of seeded-regression failures, with 0% flagged
 
 ## v2
 
-`E-swarm-20261118-6c48`, SHA `6c485543157f`, spec 2.0, 28 items × five seeds. Baseline pass_rate 0.9786, pass_hat_5 0.8929. The money_movement slice targets refund-only regressions, adversarial covers instructor attack cases, and pass_hat_5 targets intermittent failures. The alternate seeds 66/77/88/99/110 produced A/A Δ = 0 for every reported metric. The pass_hat_5 floor is 0.80, outside that deterministic MockLLM A/A noise band; real LLM noise must be measured on repeated independent runs before choosing a production threshold.
+`E-swarm-20261118-6c48`, SHA `6c485543157f`, spec 2.0, 28 items × five seeds. Baseline pass_rate 0.9786, pass_hat_5 0.8929. The money_movement slice blocks the public slice regression at 0.85 (floor 0.95), while its overall pass_rate is 0.9357. The adversarial slice covers instructor attack cases, and pass_hat_5 targets intermittent failures. All four public integrity traps are blocked. The alternate seeds 66/77/88/99/110 produced A/A Δ = 0 for every reported metric. The pass_hat_5 floor is 0.80, outside that deterministic MockLLM A/A noise band; real LLM noise must be measured on repeated independent runs before choosing a production threshold.
 
 ## Limits and governance
 
