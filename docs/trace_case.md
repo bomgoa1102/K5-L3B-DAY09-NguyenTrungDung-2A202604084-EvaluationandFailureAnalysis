@@ -1,30 +1,7 @@
-# Trace case: từ trace tới quyết định sai đầu tiên
+# Phân tích trace: C-002@11
 
-Một trace case trả lời một câu: **bước nào là bước sai đầu tiên**, và test nào sẽ bắt được nó lần sau.
+Trial `seeded_regression C-002@11` (xem `reports/eval_seeded_regression.json`): grader của Lab 8 báo sai trạng thái. Ledger ghi một khoản hoàn 20.000 đồng, trong khi nhãn yêu cầu từ chối và không hoàn tiền. Câu trả lời báo đã hoàn 20.000 đồng.
 
-```bash
-cd src
-python -m lab9.trace_case --shape seeded_regression --claim C-002 --seed 11
-python -m lab9.trace_case --shape fixed --claim C-002 --seed 11   # đối chứng
-```
+Bước sai đầu tiên là **sự kiện 3, `model_override`, `{"delay_days": 5}`**: thông tin từ ticket ghi đè dữ kiện cơ sở dữ liệu trả về ở sự kiện 2 (`investigator`). Sự kiện 1 chỉ bàn giao công việc, còn sự kiện 2 tra cứu dữ liệu; cả hai chưa thay đổi dữ kiện. Sự kiện 4 báo giá 20.000 đồng và sự kiện 6 thông báo hoàn tiền là hệ quả về sau. Đây là FM-03.
 
-Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_override`, `error` …), ledger so với nhãn, và lý do của grader Lab 8.
-
-## Mẫu điền (mỗi bạn 1 case, lấy từ trial đang fail trong report)
-
-| Trường | Nội dung |
-|---|---|
-| Trial | `<shape> <claim>@<seed>`, run ID trong report |
-| Triệu chứng | Grader nào fail; reply nói gì so với ledger ghi gì |
-| Bước sai đầu tiên | Số thứ tự event + kind + trích payload (≤1 dòng) |
-| Vì sao là bước *đầu tiên* | Các bước trước đó đúng ra sao (dẫn số event) |
-| Failure mode | Mã FM-xx trong `docs/failure_taxonomy.md` |
-| Đối chứng | Cùng claim@seed trên shape `fixed`: bước đó khác thế nào |
-| Regression test | Tên test + grader/assert nào bắt được; đã thấy fail trên variant lỗi và pass trên `fixed` chưa |
-| Chưa chắc chắn | Điều trace không chứng minh được |
-
-## Quy tắc
-
-- Đọc **ledger trước reply**: reply trôi chảy vẫn có thể đi kèm một khoản hoàn sai.
-- "Bước sai đầu tiên" phải dẫn số event cụ thể, không phải "agent bị nhầm".
-- Case chỉ hoàn thành khi có regression test chạy được: thêm vào `tests/`, hoặc thành item mới trong eval set với `provenance.from_trace`.
+Ở đối chứng `fixed` với cùng claim và seed, không có sự kiện ghi đè: sự kiện 3 báo giá bằng 0, sự kiện 4 từ chối yêu cầu và ledger vẫn bằng 0. Test `src/tests/test_lab9_regression_case.py::test_ticket_override_regression` kiểm tra cả hai trace và kết quả. Trace chứng minh hành vi ghi đè và kết quả quan sát được, nhưng không chứng minh quá trình suy luận nội bộ của mô hình.
