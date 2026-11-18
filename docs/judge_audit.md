@@ -1,20 +1,20 @@
-# Judge audit
+# Kiểm định judge
 
-Replay of 100 public labels each; FAIL is the positive class. Floors: κ ≥ 0.6, precision ≥ 0.8, recall ≥ 0.7.
+Mỗi judge được chạy lại trên 100 nhãn công khai; FAIL là lớp dương. Ngưỡng yêu cầu: κ ≥ 0,6, precision ≥ 0,8 và recall ≥ 0,7.
 
-| Judge | TP | FP | FN | TN | κ | Precision | Recall | Decision |
+| Judge | TP | FP | FN | TN | κ | Precision | Recall | Quyết định |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| tone_ok | 24 | 4 | 6 | 66 | 0.757 | 0.857 | 0.800 | usable for this replay |
-| helpful | 9 | 0 | 21 | 70 | 0.375 | 1.000 | 0.300 | reject as gate |
+| tone_ok | 24 | 4 | 6 | 66 | 0,757 | 0,857 | 0,800 | Có thể dùng trên tập replay này |
+| helpful | 9 | 0 | 21 | 70 | 0,375 | 1,000 | 0,300 | Loại khỏi gate |
 
-Tone's observed failure rate 0.28 corrects to 0.30 with Rogan–Gladen. Helpful misses 21 of 30 human failures; its high precision does not compensate for low recall or κ.
+Tỷ lệ lỗi quan sát của tone là 0,28; sau hiệu chỉnh Rogan–Gladen là 0,30. Judge helpful bỏ sót 21 trong 30 lỗi theo nhãn người; precision cao không bù được recall và κ thấp.
 
-| Case | Judge | Human | Adjudication and rubric action |
+| Case | Judge | Người | Phân xử và điều chỉnh rubric |
 |---|---|---|---|
-| H-008 | PASS | FAIL | Accept human label; define informal address and “check” as inconsistent with the tone standard. |
-| H-017 | PASS | FAIL | Accept human label; explicitly cover overly familiar “nha” in refund announcements. |
-| H-029 | PASS | FAIL | Accept human label; mark dismissive instructions such as “không cần nhắn thêm”. |
-| H-042 | FAIL | PASS | Accept human label; a concise respectful refund and timing statement is acceptable. |
-| H-051 | FAIL | PASS | Accept human label; a borrowed word alone is not a tone violation. |
+| H-008 | PASS | FAIL | Theo nhãn người; quy định rõ cách xưng hô thân mật và từ “check” không phù hợp chuẩn giọng điệu. |
+| H-017 | PASS | FAIL | Theo nhãn người; bổ sung ví dụ dùng “nha” quá thân mật khi thông báo hoàn tiền. |
+| H-029 | PASS | FAIL | Theo nhãn người; đánh dấu chỉ dẫn thiếu tôn trọng như “không cần nhắn thêm”. |
+| H-042 | FAIL | PASS | Theo nhãn người; câu ngắn gọn, lịch sự nêu số tiền và thời gian là chấp nhận được. |
+| H-051 | FAIL | PASS | Theo nhãn người; chỉ dùng một từ mượn không tự động là lỗi giọng điệu. |
 
-These are adjudications against the supplied labels, not independent new human reviews. The public replay is not a held-out evaluation; obtain new blinded human labels before production use.
+Các phân xử dựa trên nhãn được cung cấp, không phải lượt đánh giá độc lập mới. Tập replay công khai không phải tập held-out; cần thu thập nhãn người mới theo cách đánh giá mù trước khi dùng trong thực tế.

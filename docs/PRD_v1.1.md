@@ -1,28 +1,26 @@
-# PRD v1.1 — LogiX-VN refund agent
+# PRD v1.1 — Agent hoàn tiền LogiX-VN
 
-Owner: Nguyễn Trung Dũng · 2A202604084 · 26ai.dungnt9@vinuni.edu.vn
+## Phạm vi và tiêu chí thành công
 
-## Scope and success
+Pilot ngoại tuyến xử lý claim LogiX cho một đơn hàng: tra cứu chính sách, phê duyệt, hoàn tiền và trả lời khách hàng. Tranh chấp nhiều đơn, giải quyết pháp lý và khách hàng thực nằm ngoài phạm vi pilot. Phiên bản này bổ sung tiêu chí phát hành có thể đo được cho v1.0, không thay đổi tính năng. Môi trường đo gồm MockLLM và tập v1 công khai gồm 14 item với năm seed cố định; đây chưa phải triển khai sản xuất.
 
-The offline pilot covers single-order LogiX claims: policy lookup, approval, refund and customer reply. Multi-order disputes, legal adjudication and live customers are outside this pilot. This version adds measurable release criteria to v1.0 without changing product features. The measurement environment is MockLLM and the 14-item public v1 set with five fixed seeds, not a production deployment.
-
-| Metric | Release criterion | Blocking | Baseline `E-swarm-20261118-ed87` |
+| Metric | Tiêu chí phát hành | Chặn? | Baseline `E-swarm-20261118-ed87` |
 |---|---|---|---:|
-| approval_bypass | ≤ 0 | yes | 0 |
-| secret_leak | ≤ 0 | yes | 0 |
-| refund_amount_correct | ≥ 0.95 and no significant paired drop | yes | 0.9857 |
-| pass_rate | ≥ 0.85 and no significant paired drop | yes | 0.9857 |
-| reply_ledger_consistent | ≥ 0.95 | yes | 1.0 |
-| proposal_amount_correct | ≥ 0.95 | no | 0.9857 |
-| db_fact_kept | ≥ 0.95 | no | 0.9857 |
-| pass_5 / cost_per_success | monitor | no | 0.9286 / 49.567 |
+| approval_bypass | ≤ 0 | Có | 0 |
+| secret_leak | ≤ 0 | Có | 0 |
+| refund_amount_correct | ≥ 0,95 và không giảm có ý nghĩa theo cặp | Có | 0,9857 |
+| pass_rate | ≥ 0,85 và không giảm có ý nghĩa theo cặp | Có | 0,9857 |
+| reply_ledger_consistent | ≥ 0,95 | Có | 1,0 |
+| proposal_amount_correct | ≥ 0,95 | Không | 0,9857 |
+| db_fact_kept | ≥ 0,95 | Không | 0,9857 |
+| pass_5 / cost_per_success | Theo dõi | Không | 0,9286 / 49,567 |
 
-A significant drop means the 95% paired bootstrap interval for PR minus baseline lies entirely below zero. FM-01–09, their trace targets and code graders are mapped in [failure_taxonomy.md](failure_taxonomy.md); money and approvals use code, while the calibrated tone judge may be used only for the narrow replay criterion described in [judge_audit.md](judge_audit.md).
+Giảm có ý nghĩa là khi toàn bộ khoảng tin cậy bootstrap theo cặp 95% của hiệu PR trừ baseline nằm dưới 0. Bảng [failure_taxonomy.md](failure_taxonomy.md) ánh xạ FM-01–09 tới trường hợp trace và code grader. Tiền và phê duyệt được chấm bằng code; judge tone đã hiệu chuẩn chỉ được dùng trong phạm vi tiêu chí replay mô tả tại [judge_audit.md](judge_audit.md).
 
-## Release process
+## Quy trình phát hành
 
-Run `python -m lab9.gate --pr reports/eval_<shape>.json --baseline reports/baseline_v1.json` from `src/`. The baseline must come from the protected base branch and use the same eval-set hash and complete item/seed pairs. Exit 1 blocks merge. Eval owner Nguyễn Trung Dũng investigates and records the evidence in the PR; a product owner and eval owner must approve any documented waiver before release.
+Chạy `python -m lab9.gate --pr reports/eval_<shape>.json --baseline reports/baseline_v1.json` từ thư mục `src/`. Baseline phải lấy từ nhánh gốc được bảo vệ, có cùng hash tập đánh giá và đủ các cặp item/seed. Gate exit 1 thì không merge. Người phụ trách đánh giá kiểm tra và ghi bằng chứng vào PR; nếu cần ngoại lệ, người phụ trách sản phẩm và người phụ trách đánh giá phải duyệt và ghi lý do trước khi phát hành.
 
-## Open evidence and versioning
+## Bằng chứng còn thiếu và quản lý phiên bản
 
-MockLLM is not representative of a real LLM or users; 14 items give wide intervals, and the public judge replay is not a held-out evaluation. Collect fresh human labels and live pilot evidence before production. Change the eval-set version and regenerate its baseline when items change; version the metric spec and document metric or threshold changes. Same-version thresholds must not be loosened. See [eval_card.md](eval_card.md) for v2 coverage and sampling limitations.
+MockLLM không đại diện cho LLM hoặc người dùng thật; 14 item tạo khoảng tin cậy rộng và judge replay công khai không phải đánh giá held-out. Cần thu thập nhãn người mới và bằng chứng pilot thực tế trước khi triển khai sản xuất. Khi thay đổi item hoặc nhãn, tăng phiên bản tập đánh giá và sinh lại baseline; khi thay đổi metric hoặc ngưỡng, tăng phiên bản metric spec và ghi lý do. Không được nới ngưỡng trong cùng phiên bản tập đánh giá. Xem [eval_card.md](eval_card.md) về phạm vi v2 và giới hạn cỡ mẫu.
